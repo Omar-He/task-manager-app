@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import Backdrop from "@mui/material/Backdrop";
 import Box from "@mui/material/Box";
 import Modal from "@mui/material/Modal";
@@ -8,6 +8,7 @@ import { Task } from "@/types/tasks";
 import { TextField } from "@mui/material";
 import { updateTask } from "@/utils/request";
 import LoadingButton from "@mui/lab/LoadingButton";
+import AlertSnackbar from "../Snackbar/Snackbar";
 
 const style = {
   position: "absolute" as "absolute",
@@ -40,6 +41,8 @@ export default function EditModal({
 }: PropsTypes) {
   const [editedTask, setEditedTask] = useState<Task>(task);
   const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [openSnackbar, setOpenSnackbar] = useState<boolean>(false);
+  const [snackbarMsg, setSnackbarMsg] = useState<string>("");
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -49,11 +52,18 @@ export default function EditModal({
         name: editedTask.name,
         completed: editedTask.completed,
       });
-    } catch (e) {
+    } catch (e: any) {
       console.error(e);
+      setOpenSnackbar(true);
+      setSnackbarMsg(e.message);
+      setIsLoading(false);
+      return;
     }
-    setIsLoading(false);
     refreshTasks();
+  };
+
+  const onCloseSnackbar = () => {
+    setOpenSnackbar(false);
   };
 
   return (
@@ -81,6 +91,7 @@ export default function EditModal({
               margin="normal"
               variant="outlined"
               fullWidth
+              required
               value={editedTask?.name}
               label="Name"
               onChange={(e) =>
@@ -97,6 +108,13 @@ export default function EditModal({
           </Box>
         </Fade>
       </Modal>
+      {openSnackbar && (
+        <AlertSnackbar
+          openStatus={openSnackbar}
+          message={snackbarMsg}
+          onClose={onCloseSnackbar}
+        />
+      )}
     </Box>
   );
 }

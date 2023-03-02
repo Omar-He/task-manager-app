@@ -14,6 +14,7 @@ import { addTask, deleteTask, getTasks, logoutUser } from "@/utils/request";
 import { Task } from "@/types/tasks";
 import { useRouter } from "next/router";
 import EditModal from "./EditModal";
+import AlertSnackbar from "../Snackbar/Snackbar";
 
 const Tasks = () => {
   const router = useRouter();
@@ -22,6 +23,8 @@ const Tasks = () => {
   const [taskName, setTaskName] = useState<string>("");
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [openModal, setOpenModal] = useState<boolean>(false);
+  const [openSnackbar, setOpenSnackbar] = useState<boolean>(false);
+  const [snackbarMsg, setSnackbarMsg] = useState<string>("");
 
   useEffect(() => {
     getAllTasks();
@@ -32,8 +35,10 @@ const Tasks = () => {
     try {
       const res = await getTasks();
       setTasks(res.tasks);
-    } catch (e) {
+    } catch (e: any) {
       console.error(e);
+      setOpenSnackbar(true);
+      setSnackbarMsg(e.message);
     }
     setIsLoading(false);
   }
@@ -47,8 +52,10 @@ const Tasks = () => {
         completed: false,
       });
       await getAllTasks();
-    } catch (e) {
+    } catch (e: any) {
       console.error(e);
+      setOpenSnackbar(true);
+      setSnackbarMsg(e.message);
     }
     setTaskName("");
     setIsLoading(false);
@@ -59,8 +66,10 @@ const Tasks = () => {
     try {
       await deleteTask(id);
       await getAllTasks();
-    } catch (e) {
+    } catch (e: any) {
       console.error(e);
+      setOpenSnackbar(true);
+      setSnackbarMsg(e.message);
     }
     setIsLoading(false);
   };
@@ -82,6 +91,10 @@ const Tasks = () => {
   const onRefresh = () => {
     getAllTasks();
     onCloseModal();
+  };
+
+  const onCloseSnackbar = () => {
+    setOpenSnackbar(false);
   };
 
   return (
@@ -106,6 +119,7 @@ const Tasks = () => {
               margin="normal"
               variant="outlined"
               fullWidth
+              required
               value={taskName}
               placeholder="Type the task name.."
               onChange={(e) => setTaskName(e.target.value)}
@@ -149,6 +163,13 @@ const Tasks = () => {
           onClose={onCloseModal}
           task={taskToEdit}
           refreshTasks={onRefresh}
+        />
+      )}
+      {openSnackbar && (
+        <AlertSnackbar
+          openStatus={openSnackbar}
+          message={snackbarMsg}
+          onClose={onCloseSnackbar}
         />
       )}
     </>
