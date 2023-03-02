@@ -6,7 +6,7 @@ const API_URL = "https://task-manager-api-sepia.vercel.app/api/v1";
 
 const getToken = (): string | null => localStorage.getItem("token");
 
-const setToken = (token: string, rememberMe: boolean): void => {
+const setToken = (token: string, rememberMe?: boolean): void => {
   Cookies.set("token", token, {
     secure: true,
     sameSite: "strict",
@@ -40,7 +40,7 @@ const request = async <T>(
 
 export const loginUser = async (
   payload: LoginPayload,
-  rememberMe: boolean
+  rememberMe?: boolean
 ): Promise<void> => {
   try {
     const data: LoginResponse = await request("auth/login", "POST", payload);
