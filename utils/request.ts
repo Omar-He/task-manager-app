@@ -75,6 +75,18 @@ export const addTask = async (payload: AddTaskPayload): Promise<void> => {
   }
 };
 
+export const updateTask = async (
+  id: string,
+  payload: AddTaskPayload
+): Promise<void> => {
+  try {
+    await request(`tasks/${id}`, "PATCH", payload);
+    console.log("Task has been updated successfully");
+  } catch (error) {
+    throw new Error("Unable to update the task");
+  }
+};
+
 export const deleteTask = async (id: string): Promise<void> => {
   try {
     await request(`tasks/${id}`, "DELETE");
