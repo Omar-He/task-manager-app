@@ -10,10 +10,12 @@ import {
   Typography,
   Paper,
 } from "@mui/material";
-import { addTask, deleteTask, getTasks } from "@/utils/request";
+import { addTask, deleteTask, getTasks, logoutUser } from "@/utils/request";
 import { Task } from "@/types/tasks";
+import { useRouter } from "next/router";
 
 const Tasks = () => {
+  const router = useRouter();
   const [allTasks, setTasks] = useState<Task[]>([]);
   const [taskName, setTaskName] = useState<string>("");
   const [isLoading, setIsLoading] = useState<boolean>(false);
@@ -60,9 +62,14 @@ const Tasks = () => {
     setIsLoading(false);
   };
 
+  const onLogout = () => {
+    logoutUser();
+    router.push("/login");
+  };
+
   return (
     <Container maxWidth="xs">
-      <Paper elevation={3} sx={{ px: 4, py: 6 }}>
+      <Paper elevation={3} sx={{ px: 4, pt: 6, pb: 2 }}>
         <Box
           component="form"
           sx={{
@@ -109,6 +116,10 @@ const Tasks = () => {
               ))}
             </Grid>
           )}
+        </Box>
+
+        <Box mt={8}>
+          <Button onClick={onLogout}>Logout</Button>
         </Box>
       </Paper>
     </Container>

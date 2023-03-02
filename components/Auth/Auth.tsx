@@ -1,6 +1,6 @@
+import { useEffect } from "react";
 import { useRouter } from "next/router";
 import Cookies from "js-cookie";
-import { useEffect } from "react";
 
 interface AuthProps {
   children: React.ReactNode;

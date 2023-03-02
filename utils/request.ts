@@ -15,6 +15,11 @@ const setToken = (token: string, rememberMe?: boolean): void => {
   localStorage.setItem("token", token);
 };
 
+export const logoutUser = (): void => {
+  Cookies.remove("token");
+  localStorage.removeItem("token");
+};
+
 const request = async <T>(
   path: string,
   method: string,
