@@ -4,7 +4,7 @@ import Box from "@mui/material/Box";
 import Modal from "@mui/material/Modal";
 import Fade from "@mui/material/Fade";
 import Typography from "@mui/material/Typography";
-import { Task } from "@/types/tasks";
+import { SnackbarOptions, Task } from "@/types/tasks";
 import { TextField } from "@mui/material";
 import { updateTask } from "@/utils/request";
 import LoadingButton from "@mui/lab/LoadingButton";
@@ -42,7 +42,10 @@ export default function EditModal({
   const [editedTask, setEditedTask] = useState<Task>(task);
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [openSnackbar, setOpenSnackbar] = useState<boolean>(false);
-  const [snackbarMsg, setSnackbarMsg] = useState<string>("");
+  const [snackbarOptions, setSnackbarOptions] = useState<SnackbarOptions>({
+    message: "",
+    variant: "error",
+  });
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -55,7 +58,7 @@ export default function EditModal({
     } catch (e: any) {
       console.error(e);
       setOpenSnackbar(true);
-      setSnackbarMsg(e.message);
+      setSnackbarOptions({ message: e.message, variant: "error" });
       setIsLoading(false);
       return;
     }
@@ -111,7 +114,7 @@ export default function EditModal({
       {openSnackbar && (
         <AlertSnackbar
           openStatus={openSnackbar}
-          message={snackbarMsg}
+          options={snackbarOptions}
           onClose={onCloseSnackbar}
         />
       )}

@@ -1,3 +1,5 @@
+import { AlertColor } from "@mui/material";
+
 export interface Task {
   completed: boolean;
   createdAt: string;
@@ -16,4 +18,9 @@ export interface TasksResponse {
 export interface AddTaskPayload {
   name: string;
   completed: boolean;
+}
+
+export interface SnackbarOptions {
+  variant?: AlertColor;
+  message: string;
 }

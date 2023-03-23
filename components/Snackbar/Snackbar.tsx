@@ -3,21 +3,24 @@ import Button from "@mui/material/Button";
 import Snackbar from "@mui/material/Snackbar";
 import IconButton from "@mui/material/IconButton";
 import CloseIcon from "@mui/icons-material/Close";
-import { Alert } from "@mui/material";
+import { Alert, AlertColor } from "@mui/material";
 
 interface PropTypes {
   openStatus: boolean;
-  message: string;
+  options: {
+    variant?: AlertColor;
+    message: string;
+  };
   onClose: () => void;
 }
 
 export default function AlertSnackbar({
   openStatus,
-  message,
+  options,
   onClose,
 }: PropTypes) {
   const [open, setOpen] = React.useState(openStatus);
-
+  const { message, variant } = options;
   const handleClose = (
     event: React.SyntheticEvent | Event,
     reason?: string
@@ -46,8 +49,13 @@ export default function AlertSnackbar({
   );
 
   return (
-    <Snackbar open={open} autoHideDuration={3000} onClose={handleClose}>
-      <Alert onClose={handleClose} severity="error" sx={{ width: "100%" }}>
+    <Snackbar
+      open={open}
+      autoHideDuration={3000}
+      onClose={handleClose}
+      anchorOrigin={{ vertical: "top", horizontal: "left" }}
+    >
+      <Alert onClose={handleClose} severity={variant} sx={{ width: "100%" }}>
         {message}
       </Alert>
     </Snackbar>

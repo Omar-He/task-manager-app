@@ -11,7 +11,7 @@ import {
   Paper,
 } from "@mui/material";
 import { addTask, deleteTask, getTasks, logoutUser } from "@/utils/request";
-import { Task } from "@/types/tasks";
+import { SnackbarOptions, Task } from "@/types/tasks";
 import { useRouter } from "next/router";
 import EditModal from "./EditModal";
 import AlertSnackbar from "../Snackbar/Snackbar";
@@ -24,7 +24,10 @@ const Tasks = () => {
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [openModal, setOpenModal] = useState<boolean>(false);
   const [openSnackbar, setOpenSnackbar] = useState<boolean>(false);
-  const [snackbarMsg, setSnackbarMsg] = useState<string>("");
+  const [snackbarOptions, setSnackbarOptions] = useState<SnackbarOptions>({
+    message: "",
+    variant: "error",
+  });
 
   useEffect(() => {
     getAllTasks();
@@ -38,7 +41,7 @@ const Tasks = () => {
     } catch (e: any) {
       console.error(e);
       setOpenSnackbar(true);
-      setSnackbarMsg(e.message);
+      setSnackbarOptions({ message: e.message, variant: "error" });
     }
     setIsLoading(false);
   }
@@ -52,10 +55,15 @@ const Tasks = () => {
         completed: false,
       });
       await getAllTasks();
+      setOpenSnackbar(true);
+      setSnackbarOptions({
+        message: "The task has been added successfully",
+        variant: "success",
+      });
     } catch (e: any) {
       console.error(e);
       setOpenSnackbar(true);
-      setSnackbarMsg(e.message);
+      setSnackbarOptions({ message: e.message, variant: "error" });
     }
     setTaskName("");
     setIsLoading(false);
@@ -66,10 +74,15 @@ const Tasks = () => {
     try {
       await deleteTask(id);
       await getAllTasks();
+      setOpenSnackbar(true);
+      setSnackbarOptions({
+        message: "The task has been deleted successfully",
+        variant: "success",
+      });
     } catch (e: any) {
       console.error(e);
       setOpenSnackbar(true);
-      setSnackbarMsg(e.message);
+      setSnackbarOptions({ message: e.message, variant: "error" });
     }
     setIsLoading(false);
   };
@@ -83,12 +96,18 @@ const Tasks = () => {
     setTaskToEdit(task);
     setOpenModal(true);
   };
+
   const onCloseModal = () => {
     setTaskToEdit(null);
     setOpenModal(false);
   };
 
   const onRefresh = () => {
+    setOpenSnackbar(true);
+    setSnackbarOptions({
+      message: "The task has been updated successfully",
+      variant: "success",
+    });
     getAllTasks();
     onCloseModal();
   };
@@ -168,7 +187,7 @@ const Tasks = () => {
       {openSnackbar && (
         <AlertSnackbar
           openStatus={openSnackbar}
-          message={snackbarMsg}
+          options={snackbarOptions}
           onClose={onCloseSnackbar}
         />
       )}
