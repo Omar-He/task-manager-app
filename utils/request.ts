@@ -1,4 +1,4 @@
-import { LoginPayload, LoginResponse } from "@/types/auth";
+import { LoginPayload, LoginResponse, RegisterPayload } from "@/types/auth";
 import { TasksResponse, AddTaskPayload } from "@/types/tasks";
 import Cookies from "js-cookie";
 
@@ -53,6 +53,16 @@ export const loginUser = async (
     console.log("You logged in successfully");
   } catch (error) {
     throw new Error("Unable to login");
+  }
+};
+
+//registerUser
+export const registerUser = async (payload: RegisterPayload): Promise<void> => {
+  try {
+    const data: LoginResponse = await request("auth/register", "POST", payload);
+    console.log("You registered successfully");
+  } catch (error) {
+    throw new Error("Unable to register");
   }
 };
 

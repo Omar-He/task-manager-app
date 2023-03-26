@@ -7,3 +7,8 @@ export interface LoginPayload {
   password: FormDataEntryValue | null;
   rememberMe?: boolean;
 }
+export interface RegisterPayload {
+  email: FormDataEntryValue | null;
+  password: FormDataEntryValue | null;
+  name: FormDataEntryValue | null;
+}

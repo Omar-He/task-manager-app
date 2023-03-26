@@ -1,65 +1,52 @@
 import React, { useState } from "react";
-import Avatar from "@mui/material/Avatar";
-import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 import {
+  TextField,
   Container,
+  Paper,
+  Box,
   Typography,
   CssBaseline,
-  TextField,
-  FormControlLabel,
-  Checkbox,
-  Link,
-  Grid,
-  Box,
-  Paper,
+  Avatar,
 } from "@mui/material";
-import LoadingButton from "@mui/lab/LoadingButton";
-import { loginUser } from "@/utils/request";
+import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
+import { LoadingButton } from "@mui/lab";
+import { registerUser } from "@/utils/request";
 import { useRouter } from "next/router";
+import AlertSnackbar from "../Snackbar/Snackbar";
+import { SnackbarOptions } from "@/types/tasks";
 
-function Copyright(props: any) {
-  return (
-    <Typography
-      variant="body2"
-      color="text.secondary"
-      align="center"
-      {...props}
-    >
-      {"Copyright © "}
-      <Link color="inherit" href="https://mui.com/">
-        Your Website
-      </Link>{" "}
-      {new Date().getFullYear()}
-      {"."}
-    </Typography>
-  );
-}
-
-export default function SignIn() {
+const Register = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [rememberMe, setRememberMe] = useState(false);
+  const [name, setName] = useState("");
   const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [openSnackbar, setOpenSnackbar] = useState<boolean>(false);
   const router = useRouter();
+  const [snackbarOptions, setSnackbarOptions] = useState<SnackbarOptions>({
+    message: "",
+    variant: "error",
+  });
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     setIsLoading(true);
     try {
-      await loginUser({
+      await registerUser({
         email,
         password,
-        rememberMe,
+        name,
       });
-      router.push("/tasks");
-    } catch (e) {
+      router.push("/login");
+    } catch (e: any) {
       console.error(e);
+      setOpenSnackbar(true);
+      setSnackbarOptions({ message: e.message, variant: "error" });
     }
     setIsLoading(false);
   };
 
-  const handleRememberMeChange = (checked: boolean) => {
-    setRememberMe(checked);
+  const onCloseSnackbar = () => {
+    setOpenSnackbar(false);
   };
 
   return (
@@ -77,13 +64,13 @@ export default function SignIn() {
             <LockOutlinedIcon />
           </Avatar>
           <Typography component="h1" variant="h5">
-            Sign in
+            Register
           </Typography>
           <Box
             component="form"
             onSubmit={handleSubmit}
             noValidate
-            sx={{ mt: 1 }}
+            sx={{ mt: 1, width: "100%" }}
           >
             <TextField
               margin="normal"
@@ -96,8 +83,9 @@ export default function SignIn() {
               autoFocus
               type="email"
               value={email}
-              onChange={(event) => setEmail(event.target.value)}
+              onChange={(e) => setEmail(e.target.value)}
             />
+            <br />
             <TextField
               margin="normal"
               required
@@ -108,14 +96,24 @@ export default function SignIn() {
               id="password"
               autoComplete="current-password"
               value={password}
-              onChange={(event) => setPassword(event.target.value)}
+              onChange={(e) => setPassword(e.target.value)}
             />
-            <FormControlLabel
-              control={<Checkbox color="primary" />}
-              label="Remember me"
-              checked={rememberMe}
-              onChange={(event, checked) => handleRememberMeChange(checked)}
+            <br />
+            <TextField
+              type="text"
+              label="Name"
+              variant="outlined"
+              color="secondary"
+              fullWidth
+              value={name}
+              margin="normal"
+              required
+              name="name"
+              id="name"
+              autoComplete="current-password"
+              onChange={(e) => setName(e.target.value)}
             />
+            <br />
             <LoadingButton
               loading={isLoading}
               type="submit"
@@ -123,24 +121,20 @@ export default function SignIn() {
               variant="contained"
               sx={{ mt: 3, mb: 2 }}
             >
-              Sign In
+              Register
             </LoadingButton>
-            <Grid container>
-              <Grid item xs>
-                <Link href="#" variant="body2">
-                  Forgot password?
-                </Link>
-              </Grid>
-              <Grid item>
-                <Link href="/register" variant="body2">
-                  {"Don't have an account? Sign Up"}
-                </Link>
-              </Grid>
-            </Grid>
           </Box>
         </Box>
-        <Copyright sx={{ mt: 8, mb: 4 }} />
       </Paper>
+      {openSnackbar && (
+        <AlertSnackbar
+          openStatus={openSnackbar}
+          options={snackbarOptions}
+          onClose={onCloseSnackbar}
+        />
+      )}
     </Container>
   );
-}
+};
+
+export default Register;
