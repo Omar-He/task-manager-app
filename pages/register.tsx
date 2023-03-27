@@ -4,7 +4,7 @@ import { useRouter } from "next/router";
 import Cookies from "js-cookie";
 import Register from "@/components/Auth/Register";
 
-const Login = () => {
+const RegisterPage = () => {
   const router = useRouter();
 
   useEffect(() => {
@@ -21,4 +21,4 @@ const Login = () => {
   );
 };
 
-export default Login;
+export default RegisterPage;

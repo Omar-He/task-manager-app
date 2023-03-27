@@ -66,6 +66,27 @@ export const registerUser = async (payload: RegisterPayload): Promise<void> => {
   }
 };
 
+export const forgotPassword = async (email: string): Promise<void> => {
+  try {
+    await request("auth/forgot-password", "POST", { email });
+    console.log("Password reset link has been sent to your email");
+  } catch (error) {
+    throw new Error("Unable to send the password reset link");
+  }
+};
+
+export const resetPassword = async (payload: {
+  password: string;
+  token: string;
+}): Promise<void> => {
+  try {
+    await request("auth/reset-password", "POST", payload);
+    console.log("Password has been reset successfully");
+  } catch (error) {
+    throw new Error("Unable to reset the password");
+  }
+};
+
 export const getTasks = async (): Promise<TasksResponse> => {
   try {
     const data: TasksResponse = await request("tasks", "GET");
